@@ -1,0 +1,12 @@
+# Node Modules & bun.lock
+bun.lock
+bun.lockb
+node_modules/
+node_modules/**/
+
+database/
+database/**/
+cert/
+cert/**/
+html/profile_img/
+html/profile_img/**/
