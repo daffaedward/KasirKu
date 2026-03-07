@@ -14,7 +14,30 @@ global.element = {
     }),
     modal_daftar_barang: $("#modal_daftar_barang"),
     daftar_barang_table: $("#daftar_barang_table").DataTable({
-    }) // TODO: Fix XSS
+        columns: [
+            {
+                data: 0,
+                render: $.fn.dataTable.render.text()
+            },
+            {
+                data: 1,
+                render: $.fn.dataTable.render.text()
+            },
+            {
+                data: 2,
+                render: $.fn.dataTable.render.text()
+            },
+            {
+                data: 3,
+                render: $.fn.dataTable.render.text()
+            },
+            {
+                data: 4,
+                render: $.fn.dataTable.render.text()
+            },
+            {data: 5},
+        ]
+    })
 };
 
 global.init = function() {

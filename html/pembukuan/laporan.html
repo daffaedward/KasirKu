@@ -15,6 +15,9 @@
   <!-- Select2 -->
   <link rel="stylesheet" href="/plugins/select2/css/select2.min.css" init-page-css>
   <link rel="stylesheet" href="/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css" init-page-css>
+  <!-- VanillaJS Date Picker -->
+  <link rel="stylesheet" href="/plugins/vanillajs-datepicker/css/datepicker.min.css" init-page-css>
+  <link rel="stylesheet" href="/plugins/vanillajs-datepicker/css/datepicker-bs4.min.css" init-page-css>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css" init-page-css>
   <!-- Sweetalert2 -->
@@ -216,6 +219,73 @@
           <div class="col">
             <div class="card card-primary">
 							<div class="card-body">
+                <label class="col-form-label">Tanggal Laporan (YYYY/MM/DD - YYYY/MM/DD)</label>
+                <div class="row">
+                  <div class="col-6 input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="far fa-calendar-alt"></i>
+                      </span>
+                    </div>
+                    <input type="text" class="form-control float-right" id="tanggal_laporan_start" onkeydown="return false">
+                  </div>
+                  <div class="col-6 input-group">
+                    <input type="text" class="form-control float-right" id="tanggal_laporan_end" onkeydown="return false">
+                  </div>
+                </div>
+                <hr>
+                <div class="card card-success">
+                  <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-plus"></i> Penjualan</h3>
+                  </div>
+                  <div class="card-body">
+                    <table id="penjualan_table" class="table table-bordered table-striped table-hover display nowrap">
+                      <thead>
+                        <th>Tanggal</th>
+                        <th>Barang Terjual</th>
+                        <th>Total Penjualan</th>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="card card-danger">
+                  <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-minus"></i> Pengeluaran</h3>
+                  </div>
+                  <div class="card-body">
+                    <table id="pengeluaran_table" class="table table-bordered table-striped table-hover display nowrap">
+                      <thead>
+                        <th>Tanggal</th>
+                        <th>Total Pengeluaran</th>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <p class="lead">Total Laporan</p>
+                <div class="table-responsive">
+                  <table class="table">
+                    <tbody><tr>
+                      <th style="width: 50%;">Total Penjualan Barang</th>
+                      <td id="total_penjualan_barang">0</td>
+                    </tr>
+                    <tr>
+                      <th>Total Uang Penjualan</th>
+                      <td id="total_uang_penjualan">Rp0</td>
+                    </tr>
+                    <tr>
+                      <th>Total Pengeluaran</th>
+                      <td id="total_uang_pengeluaran">Rp0</td>
+                    </tr>
+                    <tr>
+                      <th>Total Pendapatan</th>
+                      <td id="total_pendapatan">Rp0</td>
+                    </tr>
+                  </tbody></table>
+                </div>
 							</div>
 						</div>
           </div>
@@ -259,6 +329,8 @@
 <script src="/plugins/pdfmake/vfs_fonts.js" data-init-page-script></script>
 <script src="/plugins/datatables-buttons/js/buttons.print.min.js" data-init-page-script></script>
 <script src="/plugins/datatables-buttons/js/buttons.colVis.min.js" data-init-page-script></script>
+<!-- VanillaJS Date Picker -->
+<script src="/plugins/vanillajs-datepicker/js/datepicker-full.min.js" data-init-page-script></script>
 <!-- Sweetalert2 -->
 <script src="/plugins/sweetalert2/sweetalert2.all.min.js" data-init-page-script></script>
 <!-- Bootstrap 4 -->

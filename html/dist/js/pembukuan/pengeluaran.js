@@ -11,8 +11,22 @@ global.element = {
 
     modal_pengeluaran: $("#modal_pengeluaran"),
     pengeluaran_table: $("#pengeluaran_table").DataTable({
-
-    }), // TODO: Fix XSS
+        columns: [
+            {
+                data: 0,
+                render: $.fn.dataTable.render.text()
+            },
+            {
+                data: 1,
+                render: $.fn.dataTable.render.text()
+            },
+            {
+                data: 2,
+                render: $.fn.dataTable.render.text()
+            },
+            {data: 3}
+        ]
+    }),
     date: new Date()
 }
 
@@ -36,7 +50,6 @@ global.element.pengeluaran_table.on('click.action_edit', '.action_edit', async f
 
     if (res.status === 200) {
         const res_json = await res.json();
-        console.log(res_json);
 
         global.element.deskripsi.value = res_json.deskripsi;
         global.element.nominal.value = money_format_bigint(ao_to_bigint(res_json.jumlah_uang));

@@ -227,6 +227,35 @@ export async function get_method(req: Request, url: URL, remote_ip: string) {
 
                 return new Response(JSON.stringify(res), {status: 200});
             }
+            case "laporan": {
+                const db = global.database;
+                if (!db) return new Response("Internal Server Error", {status: 500});
+                let stmt = db.prepare("SELECT permission_level FROM roles WHERE id = ?");
+                const res_role = stmt.get(user_info.role_id) as {permission_level: number};
+                stmt.finalize();
+                if (!res_role) return new Response("Internal Server Error", {status: 500});
+
+                if (!(res_role.permission_level & (global.permissions.ADMINISTRATOR | global.permissions.MANAGE_PEMBUKUAN))) return new Response("0", {status: 403});
+
+                const user_input = url.searchParams;
+                
+                const tanggal_start = Number(user_input.get("tanggal_start"));
+                const tanggal_end = Number(user_input.get("tanggal_end"));
+
+                if (isNaN(tanggal_start) || isNaN(tanggal_end) || !tanggal_start || !tanggal_end) return new Response("Bad Request", {status: 400});
+
+                stmt = db.prepare("SELECT * FROM penjualan WHERE tanggal_key BETWEEN ? AND ?");
+                const penjualan = stmt.all(tanggal_start, tanggal_end);
+                stmt.finalize();
+
+                stmt = db.prepare("SELECT * FROM pembukuan WHERE tipe = 1 AND tanggal_key BETWEEN ? AND ?");
+                const pengeluaran = stmt.all(tanggal_start, tanggal_end);
+                stmt.finalize();
+
+                return new Response(JSON.stringify({
+                    penjualan, pengeluaran
+                }), {status: 200});
+            }
             case "profile": { // get your current user information
                 const db = global.database;
                 if (!db) return new Response("Internal Server Error", {status: 500});
@@ -361,7 +390,6 @@ export async function get_method(req: Request, url: URL, remote_ip: string) {
         }
     }
 
-    // global.static_cache: new Map(string, Buffer)
     if (pathname === "/") pathname = "/index.html";
     if (pathname.endsWith(".")) pathname = pathname.slice(0, -1) + ".html";
     if (!pathname.includes(".")) pathname += ".html";

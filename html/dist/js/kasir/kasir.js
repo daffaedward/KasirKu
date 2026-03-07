@@ -20,11 +20,35 @@ global.element = {
     modal_cari_barang: $("#modal_cari_barang"),
     modal_pembayaran_barang: $("#modal_pembayaran_barang"),
     cari_barang_table: $("#cari_barang_table").DataTable({
-
-    }), // TODO: Fix XSS,
+        columns: [
+            {
+                data: 0,
+                render: $.fn.dataTable.render.text()
+            },
+            {
+                data: 1,
+                render: $.fn.dataTable.render.text()
+            },
+            {data: 2}
+        ]
+    }),
     kasir_table: $("#kasir_table").DataTable({
-
-    }), // TODO: Fix XSS
+        columns: [
+            {
+                data: 0,
+                render: $.fn.dataTable.render.text()
+            },
+            {
+                data: 1,
+                render: $.fn.dataTable.render.text()
+            },
+            {
+                data: 2,
+                render: $.fn.dataTable.render.text()
+            },
+            {data: 3}
+        ]
+    }),
 }
 
 global.deinit = function() { 

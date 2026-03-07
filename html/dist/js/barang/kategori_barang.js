@@ -5,11 +5,30 @@ global.element = {
 
     modal_kategori_barang: $("#modal_kategori_barang"),
     kategori_barang_table: $("#kategori_barang_table").DataTable({
-        
-    }), // TODO: Fix XSS
+        columns: [
+            {
+                data: 0,
+                render: $.fn.dataTable.render.text()
+            },
+            {data: 1}
+        ]
+    }),
     barang_assigned_kategori: $("#barang_assigned_kategori").DataTable({
-
-    }) // TODO: Fix XSS
+        columns: [
+            {
+                data: 0,
+                render: $.fn.dataTable.render.text()
+            },
+            {
+                data: 1,
+                render: $.fn.dataTable.render.text()
+            },
+            {
+                data: 2,
+                render: $.fn.dataTable.render.text()
+            }
+        ]
+    })
 };
 
 global.element.kategori_barang_table.on('click.button_edit', '.action_edit', async function () {
