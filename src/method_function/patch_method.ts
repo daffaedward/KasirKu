@@ -113,6 +113,8 @@ export async function patch_method(req: Request, url: URL) {
                 console.log("Unexpected error in patch_method.ts at /pengeluaran:", e);
                 return new Response("Internal Server Error", {status: 500});
             }
+
+            return new Response("", {status: 200});
         }
         case "/profile": { // change current user profile
             const user_info = global.user_sessions.get(token);

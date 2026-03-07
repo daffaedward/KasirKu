@@ -1,11 +1,14 @@
-const vanillajs_dark = document.getElementById("vanillajs_dark");
+const vanillajs_dark = document.createElement("link");
+vanillajs_dark.rel = "stylesheet";
 
 if (localStorage.getItem("dark_mode")) {
   document.documentElement.classList.add("dark");
   document.documentElement.classList.add("dark-mode");
-  if (vanillajs_dark) vanillajs_dark.href = "plugins/vanillajs-datepicker/css/dark.css";
+  vanillajs_dark.href = "/plugins/vanillajs-datepicker/css/dark.css";
 } else {
   document.documentElement.classList.remove("dark");
   document.documentElement.classList.remove("dark-mode");
-  if (vanillajs_dark) vanillajs_dark.href = "";
+  vanillajs_dark.href = "";
 }
+
+document.head.appendChild(vanillajs_dark);

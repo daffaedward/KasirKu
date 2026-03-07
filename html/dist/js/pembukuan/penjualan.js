@@ -21,6 +21,14 @@ global.element = {
     date: new Date()
 }
 
+global.init = () => {
+    global.element.tanggal_penjualan.addEventListener("changeDate", fetch_penjualan);
+}
+
+global.deinit = () => {
+    global.element.tanggal_penjualan.removeEventListener("changeDate", fetch_penjualan)
+}
+
 $('#penjualan_table tbody').on('click', 'td.dt-control', async function () {
     const tr = $(this).closest('tr');
     const row = global.element.penjualan_table.row(tr);
@@ -123,6 +131,6 @@ async function fetch_penjualan() {
 }
 
 (async function() {
+    global.init();
     global.element.tanggal_penjualan_picker.setDate(Date.now());
-    fetch_penjualan();
 })();

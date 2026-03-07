@@ -211,6 +211,8 @@ export async function post_method(req: Request, url: URL) {
                 console.log("Unexpected error in post_method.ts at /pengeluaran:", e);
                 return new Response("Internal Server Error", {status: 500});
             }
+
+            return new Response("", {status: 200});
         }
         case "/user": { // add user (administrator permission only)
             const user_info = global.user_sessions.get(token);

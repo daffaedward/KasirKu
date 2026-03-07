@@ -7,7 +7,7 @@ document.getElementById("dark_mode_checkbox").addEventListener("change", functio
     nav.classList.add("navbar-dark")
     
     localStorage.setItem("dark_mode", "1");
-    if (vanillajs_dark) vanillajs_dark.href = "/plugins/vanillajs-datepicker/css/dark.css"
+    vanillajs_dark.href = "/plugins/vanillajs-datepicker/css/dark.css"
   }
   else {
     document.documentElement.classList.remove("dark-mode");
@@ -15,7 +15,7 @@ document.getElementById("dark_mode_checkbox").addEventListener("change", functio
     nav.classList.remove("navbar-dark")
 
     localStorage.removeItem("dark_mode")
-    if (vanillajs_dark) vanillajs_dark.href = "";
+    vanillajs_dark.href = "";
   }
 })
 
