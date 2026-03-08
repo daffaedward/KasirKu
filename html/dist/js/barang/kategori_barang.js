@@ -5,6 +5,7 @@ global.element = {
 
     modal_kategori_barang: $("#modal_kategori_barang"),
     kategori_barang_table: $("#kategori_barang_table").DataTable({
+        rowId: 2,
         columns: [
             {
                 data: 0,
@@ -94,7 +95,6 @@ global.element.kategori_barang_table.on('click.action_delete', '.action_delete',
                     icon: "success",
                     title: "Kategori Barang berhasil dihapus!"
                 })
-                fetch_kategori();
             }
             else {
                 const status = await res.text();
@@ -134,7 +134,6 @@ global.element.kategori_barang_table.on('click.action_delete', '.action_delete',
                                         icon: "success",
                                         title: "Kategori Barang berhasil dihapus!"
                                     })
-                                    fetch_kategori();
                                 }
                                 else {
                                     const status = await res.text();
@@ -173,6 +172,48 @@ global.element.kategori_barang_table.on('click.action_delete', '.action_delete',
     })
 });
 
+global.add_sse_handler(sse_handler);
+
+async function sse_handler(e) {
+    if (e.type === 3) {
+        switch(e.code) {
+            case "TAMBAH_KATEGORI": {
+                const data = await fetch_kategori_id(e.data.id);
+                global.element.kategori_barang_table.row.add([
+                    data.nama_kategori,
+                    `<center>
+                    <button type="button" class="text-right btn btn-primary action_edit" value="${data.id}"><i class="fa fa-eye"></i> Lihat/Edit</button>
+                    <button type="button" class="text-right btn btn-danger action_delete" value="${data.id}" ${data.id === 1 ? "disabled" : ""}><i class="fa fa-trash"></i> Hapus</button>
+                    </center>`,
+                    data.id
+                ])
+                global.element.kategori_barang_table.draw();
+                break;
+            }
+            case "UPDATE_KATEGORI": {
+                const data = await fetch_kategori_id(e.data.id);
+                global.element.kategori_barang_table.row(e.data.id).add([
+                    data.nama_kategori,
+                    `<center>
+                    <button type="button" class="text-right btn btn-primary action_edit" value="${data.id}"><i class="fa fa-eye"></i> Lihat/Edit</button>
+                    <button type="button" class="text-right btn btn-danger action_delete" value="${data.id}" ${data.id === 1 ? "disabled" : ""}><i class="fa fa-trash"></i> Hapus</button>
+                    </center>`,
+                    data.id
+                ])
+                global.element.kategori_barang_table.draw();
+                break;
+            }
+            case "DELETE_KATEGORI": {
+                global.element.kategori_barang_table.row(e.data.id - 1).remove().draw();
+                break;
+            }
+            default: {
+                console.log("Unknown code:", e.code);
+                break;
+            }
+        }
+    }
+}
 async function tambah_kategori_barang_modal() {
     global.element.modal_kategori_barang_title.innerText = "Tambah Kategori";
     global.element.nama_kategori.value = "";
@@ -180,6 +221,31 @@ async function tambah_kategori_barang_modal() {
     global.element.tambah_kategori_barang_button.onclick = tambah_kategori_barang;
 
     global.element.modal_kategori_barang.modal("show");
+}
+
+async function fetch_kategori_id(id) {
+    let res = await fetch(`/api/kategori_barang?id=${id}`, {
+        method: "GET",
+        headers: {
+            "token": localStorage.getItem("token")
+        }
+    })
+
+    if (res.status === 200) return await res.json();
+    else {
+        const status = await res.text();
+        switch(status) {
+            default: {
+                swal2_mixin.fire({
+                    icon: "error",
+                    title: "Terjadi Kesalahan! Silahkan coba lagi nanti."
+                });
+                break;
+            }
+        }
+
+        return null;
+    }
 }
 
 async function fetch_kategori() {
@@ -225,8 +291,6 @@ async function tambah_kategori_barang() {
             icon: "success",
             title: "Kategori Barang berhasil ditambahkan!"
         })
-        
-        fetch_kategori();
     }
     else {
         const status = await res.text();
@@ -269,8 +333,6 @@ async function edit_kategori_barang(id) {
             icon: "success",
             title: "Kategori Barang berhasil ditambahkan!"
         });
-
-        fetch_kategori();
     }
     else {
         const status = await res.text();

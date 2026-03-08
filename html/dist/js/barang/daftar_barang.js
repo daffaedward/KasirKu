@@ -352,7 +352,7 @@ async function fetch_barang_id(id) {
 
 async function fetch_daftar_barang() {
     global.element.daftar_barang_table.clear();
-    let res = await fetch("/api/daftar_barang", {
+    let res = await fetch("/api/barang", {
         method: "GET",
         headers: {
             "token": localStorage.getItem("token")
@@ -405,8 +405,6 @@ async function edit_daftar_barang(id) {
             icon: "success",
             title: "Barang berhasil diedit!"
         });
-
-        fetch_daftar_barang();
     }
     else {
         const status = await res.text();

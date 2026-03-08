@@ -74,27 +74,18 @@ export async function get_method(req: Request, url: URL, remote_ip: string) {
                 const user_input = url.searchParams;
 
                 const id = Number(user_input.get("id"));
-                if (isNaN(id) || !id) return new Response("Bad Request", {status: 400});
-
-                stmt = db.prepare("SELECT b.id, b.nama_barang, b.stok_barang, b.kategori_barang_id, b.harga_modal, b.harga_jual, b.barcode_barang, b.created_ms, b.modified_ms, k.nama_kategori AS nama_kategori FROM barang b JOIN kategori_barang k ON b.kategori_barang_id = k.id WHERE b.id = ?");
-                const res = stmt.get(id);
-                stmt.finalize();
-
-                return new Response(JSON.stringify(res), {status: 200});
-            }
-            case "daftar_barang": {
-                const db = global.database;
-                if (!db) return new Response("Internal Server Error", {status: 500});
-                let stmt = db.prepare("SELECT permission_level FROM roles WHERE id = ?");
-                const res_role = stmt.get(user_info.role_id) as {permission_level: number};
-                stmt.finalize();
-                if (!res_role) return new Response("Internal Server Error", {status: 500});
-
-                if (!(res_role.permission_level & (global.permissions.ADMINISTRATOR | global.permissions.MANAGE_BARANG))) return new Response("0", {status: 403});
-
-                stmt = db.prepare("SELECT b.id, b.nama_barang, b.stok_barang, b.kategori_barang_id, b.harga_modal, b.harga_jual, b.barcode_barang, b.created_ms, b.modified_ms, k.nama_kategori AS nama_kategori FROM barang b JOIN kategori_barang k ON b.kategori_barang_id = k.id");
-                const res = stmt.all();
-                stmt.finalize();
+                
+                let res;
+                if (isNaN(id) || !id) {
+                    stmt = db.prepare("SELECT b.id, b.nama_barang, b.stok_barang, b.kategori_barang_id, b.harga_modal, b.harga_jual, b.barcode_barang, b.created_ms, b.modified_ms, k.nama_kategori AS nama_kategori FROM barang b JOIN kategori_barang k ON b.kategori_barang_id = k.id");
+                    res = stmt.all();
+                    stmt.finalize();
+                }
+                else {
+                    stmt = db.prepare("SELECT b.id, b.nama_barang, b.stok_barang, b.kategori_barang_id, b.harga_modal, b.harga_jual, b.barcode_barang, b.created_ms, b.modified_ms, k.nama_kategori AS nama_kategori FROM barang b JOIN kategori_barang k ON b.kategori_barang_id = k.id WHERE b.id = ?");
+                    res = stmt.get(id);
+                    stmt.finalize();
+                }
 
                 return new Response(JSON.stringify(res), {status: 200});
             }
@@ -108,9 +99,20 @@ export async function get_method(req: Request, url: URL, remote_ip: string) {
 
                 if (!(res_role.permission_level & (global.permissions.ADMINISTRATOR | global.permissions.MANAGE_BARANG))) return new Response("0", {status: 403});
 
-                stmt = db.prepare("SELECT * FROM kategori_barang");
-                const res = stmt.all();
-                stmt.finalize();
+                const user_input = url.searchParams;
+                const id = Number(user_input.get("id"));
+
+                let res;
+                if (isNaN(id) || !id) {
+                    stmt = db.prepare("SELECT * FROM kategori_barang");
+                    res = stmt.all();
+                    stmt.finalize();
+                }
+                else {
+                    stmt = db.prepare("SELECT * FROM kategori_barang WHERE id = ?");
+                    res = stmt.get(id);
+                    stmt.finalize();
+                }
 
                 return new Response(JSON.stringify(res), {status: 200});
             }
