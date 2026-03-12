@@ -26,7 +26,8 @@ global.element = {
                 render: $.fn.dataTable.render.text()
             },
             {data: 3}
-        ]
+        ],
+        scrollX: true
     }),
     date: new Date()
 }

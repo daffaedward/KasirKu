@@ -37,7 +37,9 @@ global.element = {
                 render: $.fn.dataTable.render.text()
             },
             {data: 5},
-        ]
+        ],
+        autoWidth: false,
+        scrollX: true
     })
 };
 

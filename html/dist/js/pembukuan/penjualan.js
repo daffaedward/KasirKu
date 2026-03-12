@@ -17,6 +17,7 @@ global.element = {
             { data: 'total_barang' },
             { data: 'total_harga' }
         ],
+        scrollX: true,
         order: [[1, 'asc']]
     }),
     date: new Date()

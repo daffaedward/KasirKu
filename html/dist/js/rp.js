@@ -14,9 +14,18 @@ global.element = {
             { data: 1 },
             { data: 2 },
             { data: 3 }
-        ]
+        ],
+        scrollX: true
     }),
-    user_assigned_role_table: $("#user_assigned_role_table").DataTable(),
+    user_assigned_role_table: $("#user_assigned_role_table").DataTable({
+        columns: [
+            {
+                data: 0,
+                render: $.fn.dataTable.render.text()
+            },
+        ],
+        scrollX: true
+    }),
     temp_date: new Date(),
     abort_controllers: [null, null]
 };
@@ -32,6 +41,10 @@ global.deinit = () => {
         if (e) e.abort();
     })
 }
+
+global.element.modal_role.on("shown.bs.modal", function() {
+    global.element.user_assigned_role_table.columns.adjust().draw();
+})
 
 global.element.roles_table.on('click.button_edit', '.action_edit', async function () {
     if (global.element.abort_controllers[1]) global.element.abort_controllers[1].abort();

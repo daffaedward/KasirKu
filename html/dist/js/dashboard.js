@@ -22,6 +22,7 @@ global.element = {
                 render: $.fn.dataTable.render.text()
             }
         ],
+        scrollX: true
     }),
     barang_total_terjual_table: $("#barang_total_terjual_table").DataTable({
         columns: [
@@ -34,6 +35,7 @@ global.element = {
                 render: $.fn.dataTable.render.text()
             }
         ],
+        scrollX: true
     }),
 
     date: new Date()

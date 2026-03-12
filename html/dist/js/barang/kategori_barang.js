@@ -12,7 +12,8 @@ global.element = {
                 render: $.fn.dataTable.render.text()
             },
             {data: 1}
-        ]
+        ],
+        scrollX: true
     }),
     barang_assigned_kategori: $("#barang_assigned_kategori").DataTable({
         columns: [
@@ -28,9 +29,14 @@ global.element = {
                 data: 2,
                 render: $.fn.dataTable.render.text()
             }
-        ]
+        ],
+        scrollX: true
     })
 };
+
+global.element.modal_kategori_barang.on("shown.bs.modal", function() {
+    global.element.barang_assigned_kategori.columns.adjust().draw();
+})
 
 global.element.kategori_barang_table.on('click.button_edit', '.action_edit', async function () {
     const data = this.value;
