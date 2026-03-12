@@ -352,7 +352,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text">Rp</span>
                     </div>
-                    <input type="text" class="form-control money_format_idr" id="tunai_input" placeholder="Tunai" autocomplete="off">
+                    <input type="text" class="form-control money_format_idr" id="tunai_input" placeholder="Tunai" onkeydown="if (event.keyCode === 13) {masuk_ke_pembukuan()}" autocomplete="off">
                   </div>
                 </div>
                 <hr>
@@ -385,7 +385,7 @@
               </div>
 							<div class="modal-footer justify-content-between">
 								<button type="button" class="btn btn-default" data-dismiss="modal">Close (Esc)</button>
-								<button type="button" class="btn btn-success" onclick="masuk_ke_pembukuan()">Masuk ke Pembukuan</button>
+								<button type="button" class="btn btn-success" onclick="masuk_ke_pembukuan()">Masuk ke Pembukuan (Enter)</button>
 							</div>
 						</div>
 					</div>

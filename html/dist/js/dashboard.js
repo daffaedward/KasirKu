@@ -15,8 +15,26 @@ global.element = {
         format: "yyyy/mm/dd"
     }),
 
-    barang_kosong_table: $("#barang_kosong_table").DataTable(),
-    barang_total_terjual_table: $("#barang_total_terjual_table").DataTable(),
+    barang_kosong_table: $("#barang_kosong_table").DataTable({
+        columns: [
+            {
+                data: 0,
+                render: $.fn.dataTable.render.text()
+            }
+        ],
+    }),
+    barang_total_terjual_table: $("#barang_total_terjual_table").DataTable({
+        columns: [
+            {
+                data: 0,
+                render: $.fn.dataTable.render.text()
+            },
+            {
+                data: 1,
+                render: $.fn.dataTable.render.text()
+            }
+        ],
+    }),
 
     date: new Date()
 }
