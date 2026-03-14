@@ -394,6 +394,7 @@ function hapus_semua_barang() {
             title: "Tidak ada barang yang ditambahkan!"
         });
     }
+
     document.addEventListener("keydown", esc_handler);
     Swal.fire({
         title: "Hapus Semua Barang",
