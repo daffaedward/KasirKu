@@ -1,8 +1,104 @@
-const global = {
+const sidebar_data = `<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+  <li class="section_check" style="display: none;" data-value="4">
+    <ul class="nav nav-pills nav-sidebar flex-column">
+      <li class="nav-item">
+        <hr style="border-color: rgba(255,255,255,0.1); margin: 8px 0;">
+      </li>
+      <li class="nav-header">DASHBOARD</li>
+      <li class="nav-item">
+        <a href="/" class="nav-link nav-redirect" data-url="/">
+          <i class="nav-icon fas fa-tachometer-alt"></i>
+          <p>
+            Dashboard
+          </p>
+        </a>
+      </li>
+    </ul>
+  </li>
+  <li class="section_check" style="display: none;" data-value="1">
+    <ul class="nav nav-pills nav-sidebar flex-column">
+      <li class="nav-item">
+        <hr style="border-color: rgba(255,255,255,0.1); margin: 8px 0;">
+      </li>
+      <li class="nav-header">BARANG</li>
+      <li class="nav-item">
+        <a href="/barang/daftar_barang" class="nav-link nav-redirect" data-url="/barang/daftar_barang">
+          <i class="nav-icon fas fa-boxes"></i>
+          <p>Daftar Barang</p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/barang/kategori_barang" class="nav-link nav-redirect" data-url="/barang/kategori_barang">
+          <i class="nav-icon fas fa-tag"></i>
+          <p>Kategori Barang</p>
+        </a>
+      </li>
+    </ul>
+  </li>
+  <li class="section_check" style="display: none;" data-value="2">
+    <ul class="nav nav-pills nav-sidebar flex-column">
+      <li class="nav-item">
+        <hr style="border-color: rgba(255,255,255,0.1); margin: 8px 0;">
+      </li>
+      <li class="nav-header">KASIR</li>
+      <li class="nav-item">
+        <a href="/kasir/kasir" class="nav-link nav-redirect" data-url="/kasir/kasir">
+          <i class="nav-icon fas fa-cash-register"></i>
+          <p>Kasir</p>
+        </a>
+      </li>
+    </ul>
+  </li>
+  <li class="section_check" style="display: none;" data-value="3">
+    <ul class="nav nav-pills nav-sidebar flex-column">
+      <li class="nav-item">
+        <hr style="border-color: rgba(255,255,255,0.1); margin: 8px 0;">
+      </li>
+      <li class="nav-header">PEMBUKUAN</li>
+      <li class="nav-item">
+        <a href="/pembukuan/penjualan" class="nav-link nav-redirect" data-url="/pembukuan/penjualan">
+          <i class="nav-icon fas fa-plus"></i>
+          <p>Penjualan</p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/pembukuan/pengeluaran" class="nav-link nav-redirect" data-url="/pembukuan/pengeluaran">
+          <i class="nav-icon fas fa-minus"></i>
+          <p>Pengeluaran</p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/pembukuan/laporan" class="nav-link nav-redirect" data-url="/pembukuan/laporan">
+          <i class="nav-icon fas fa-chart-line"></i>
+          <p>Laporan</p>
+        </a>
+      </li>
+    </ul>
+  </li>
+  <li class="section_check" style="display: none;" data-value="0">
+    <ul class="nav nav-pills nav-sidebar flex-column">
+      <li class="nav-item">
+        <hr style="border-color: rgba(255,255,255,0.1); margin: 8px 0;">
+      </li>
+      <li class="nav-header">ADMIN</li>
+      <li class="nav-item">
+        <a href="/users" class="nav-link nav-redirect" data-url="/users">
+          <i class="nav-icon fas fa-users"></i>
+          <p>Users</p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/rp" class="nav-link nav-redirect" data-url="/rp">
+          <i class="nav-icon fas fa-user-tag"></i>
+          <p>Roles & Permissions</p>
+        </a>
+      </li>
+    </ul>
+  </li>
+</ul>`
 
-}
+const global = {}
 
-global.browser_loaded = false;
 global.sse_retry_count = 0;
 global.sse_retry_timer = null;
 
@@ -15,15 +111,17 @@ const profile_img1 = document.getElementById("profile_img1");
 const profile_img2 = document.getElementById("profile_img2");
 const role_profile1 = document.getElementById("role_profile1");
 const status_server = document.getElementById("status_server");
+const sidebar_menu = document.getElementById("sidebar_menu");
 
-document.querySelectorAll(".nav-redirect").forEach(link => {
-  link.addEventListener("click", async e => {
-    e.preventDefault();
+document.addEventListener("click", async e => {
+  const link = e.target.closest("a.nav-redirect");
+  if (!link) return;
 
-    const url = link.getAttribute("href");
-    if (url === location.pathname) return;
-    if (await load_page(url, true) === -1) return;
-  });
+  e.preventDefault();
+
+  const url = link.href;
+  if (url === location.href) return;
+  if (await load_page(url, true) === -1) return;
 });
 
 window.addEventListener("popstate", async () => {
@@ -42,10 +140,7 @@ global.remove_sse_handler = (fn) => {
 };
 
 global.connect_sse = () => {
-
-  if (global.sse) {
-    global.sse.close();
-  }
+  if (global.sse) global.sse.close();
 
   const sse = new EventSource("/api/sse", {
     withCredentials: true
@@ -77,21 +172,17 @@ global.connect_sse = () => {
   };
 
   sse.onmessage = async (e) => {
-
     global.sse_retry_count = 0;
-
     const data = JSON.parse(e.data);
 
     if (data.type === 1) {
       switch (data.code) {
-
-        case "CHANGE_PROFILE":
+        case "CHANGE_PROFILE": {
           await fetch_profile();
           refresh_permission();
           break;
-
+        }
         case "UNAUTHORIZED": {
-
           if (global.change_password) {
             global.change_password = false;
             return;
@@ -130,7 +221,6 @@ global.connect_sse = () => {
         console.error("SSE handler error:", err);
       }
     }
-
   };
 };
 
@@ -151,8 +241,13 @@ function clearPageScripts() {
 }
 
 function update_active_nav(url) {
+  const path = new URL(url, location.origin).pathname;
+
   document.querySelectorAll(".nav-redirect").forEach(link => {
-    link.classList.toggle("active", link.getAttribute("href") === url || link.dataset.url === url);
+    const href = new URL(link.getAttribute("href"), location.origin).pathname;
+    const data = link.dataset.url;
+
+    link.classList.toggle("active", href === path || data === path);
   });
 }
 
@@ -219,7 +314,6 @@ async function loadPageScriptFromElement(scriptEl) {
 
 async function load_page(url, push = false) {
   NProgress.start();
-  if (!global.browser_loaded) global.browser_loaded = true;
   
   try {
     const version = ++load_page_version;
@@ -326,6 +420,7 @@ async function refresh_permission() {
   const parentSection = activeLink.closest(".section_check");
 
   if (parentSection && parentSection.style.display === "none") {
+
     if (await load_page("/", true) === -1) return;
   }
 }
@@ -363,7 +458,21 @@ async function fetch_profile() {
 }
 
 (async function() {
+  NProgress.start();
   await fetch_profile();
+  NProgress.inc();
+  sidebar_menu.innerHTML = sidebar_data;
+  NProgress.inc();
+
+  let pathname = location.pathname.replaceAll(".html", "");
+  for (const link of document.querySelectorAll(".nav-redirect")) {
+    if (link.dataset.url === pathname) {
+      link.classList.toggle("active", true);
+      break;
+    }
+  }
   refresh_permission();
+  NProgress.inc();
   global.connect_sse();
+  NProgress.done();
 })();
