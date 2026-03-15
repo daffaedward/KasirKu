@@ -3,7 +3,7 @@ import { get_method } from "./method_function/get_method";
 import { post_method } from "./method_function/post_method";
 import { patch_method } from "./method_function/patch_method";
 import { delete_method } from "./method_function/delete_method";
-import { global } from "./global.ts";
+import { global } from "./global";
 
 let is_server_closed = false;
 let bun_serve: any;
