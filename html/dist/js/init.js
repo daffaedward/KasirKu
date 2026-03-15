@@ -407,13 +407,16 @@ async function load_page(url, push = false) {
 async function refresh_permission() {
   const permission = global.profile.permission_level;
 
+  let redirect_recommended = null;
   document.querySelectorAll(".section_check").forEach(e => {
     const value = Number(e.dataset.value);
-
     if (permission & (1 << 0)) {
       e.style.display = "";
+      if (!redirect_recommended) redirect_recommended = "/";
     } else {
       if (permission & (1 << value)) {
+        const get_first_nav = e.querySelector(".nav-redirect");
+        if (get_first_nav && !redirect_recommended) redirect_recommended = get_first_nav.getAttribute("href");
         e.style.display = "";
       } else {
         e.style.display = "none";
@@ -427,7 +430,7 @@ async function refresh_permission() {
   const parentSection = activeLink.closest(".section_check");
 
   if (parentSection && parentSection.style.display === "none") {
-    if (await load_page("/", true) === -1) return;
+    if (await load_page(redirect_recommended, true) === -1) return;
   }
 }
 
@@ -469,7 +472,8 @@ async function fetch_profile() {
   NProgress.inc();
   sidebar_menu.innerHTML = sidebar_data;
   NProgress.inc();
-
+  refresh_permission();
+  
   let pathname = location.pathname.replaceAll(".html", "");
   for (const link of document.querySelectorAll(".nav-redirect")) {
     if (link.dataset.url === pathname) {
@@ -477,7 +481,7 @@ async function fetch_profile() {
       break;
     }
   }
-  refresh_permission();
+  
   NProgress.inc();
   global.connect_sse();
   NProgress.done();
