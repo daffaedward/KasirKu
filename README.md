@@ -49,6 +49,19 @@
 - **Docker Support**  
   Dapat dijalankan dengan mudah menggunakan container Docker.
 
+## Requirements
+### Server
+- CPU: 1 vCPU
+- RAM: 256 MB (512 MB recommended)
+- Storage: 1 GB (5 GB recommended)
+- OS: Linux / Windows / macOS / Android
+### Browser
+KasirKu dapat dijalankan di browser modern seperti:
+- Chrome 
+- Firefox
+- Edge
+- Safari
+
 ## Cara Menjalankan
 ### Pakai Bun
 Pastikan [Bun](https://bun.sh) sudah terinstall.
