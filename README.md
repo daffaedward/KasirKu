@@ -42,8 +42,6 @@
   Mendukung tampilan terang dan gelap.
 - **Session Authentication**  
   Sistem login dengan session untuk keamanan akses.
-- **Responsive UI**  
-  Antarmuka berbasis AdminLTE yang nyaman digunakan di berbagai ukuran layar.
 - **Minimal Dependency**  
   Backend ringan menggunakan Bun dan TypeScript.
 - **Docker Support**  
@@ -54,7 +52,7 @@
 - CPU: 1 vCPU (64 bit)
 - RAM: 256 MB (512 MB recommended)
 - Storage: 1 GB (5 GB recommended)
-- OS: Linux / Windows / macOS / Android
+- OS: Linux / Windows / macOS / Android (Termux)
 ### Browser
 KasirKu dapat dijalankan di browser modern seperti:
 - Chrome 
