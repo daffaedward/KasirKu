@@ -84,8 +84,8 @@ function document_keydown(e) {
 }
 
 async function sse_handler(e) {
-    if (e.type === 2) {
-        switch(e.code) {    
+    if (e.type === 2) { // daftar barang
+        switch(e.code) {
             case "TAMBAH_BARANG": {
                 const data = await fetch_barang_id(e.data.id);
                 global.element.daftar_barang_table.row.add([
@@ -131,12 +131,12 @@ async function sse_handler(e) {
             }
         }
     }
-    else if (e.type === 3) {
+    else if (e.type === 3) { // kategori barang
         await fetch_kategori_barang();
         await fetch_daftar_barang();
         global.element.kategori_barang.select2("close");
     }
-    else if (e.type === 4) {
+    else if (e.type === 4) { // kasir tambah penjualan
         switch(e.code) {
             case "TAMBAH_PENJUALAN": {
                 for (const items of e.data.items) {

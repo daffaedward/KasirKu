@@ -51,7 +51,8 @@ export async function patch_method(req: Request, url: URL) {
                 type: 2,
                 code: "UPDATE_BARANG",
                 data: {
-                    id
+                    id,
+                    kategori_barang_id
                 }
             }));
 

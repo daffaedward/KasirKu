@@ -82,7 +82,8 @@ export async function post_method(req: Request, url: URL) {
                 type: 2,
                 code: "TAMBAH_BARANG",
                 data: {
-                    id: last_row
+                    id: last_row,
+                    kategori_barang_id
                 }
             }));
 

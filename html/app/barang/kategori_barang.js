@@ -51,6 +51,10 @@ global.element.modal_kategori_barang.on("shown.bs.modal", function() {
     global.element.nama_kategori.focus();
 })
 
+global.element.modal_kategori_barang.on("hide.bs.modal", function() {
+    global.element.modal_kategori_barang.removeData("id");
+})
+
 global.element.kategori_barang_table.on('click.button_edit', '.action_edit', async function () {
     const data = this.value;
     const row_data = global.element.kategori_barang_table.row($(this).closest('tr')).data();
@@ -82,6 +86,7 @@ global.element.kategori_barang_table.on('click.button_edit', '.action_edit', asy
     global.element.tambah_kategori_barang_button.onclick = function() {edit_kategori_barang(data)};
 
     global.element.barang_assigned_kategori.draw();
+    global.element.modal_kategori_barang.data("id", data);
     global.element.modal_kategori_barang.modal("show");
 });
 
@@ -214,7 +219,29 @@ function document_keydown(e) {
 }
 
 async function sse_handler(e) {
-    if (e.type === 3) {
+    if (e.type === 2) {
+        if (Number(global.element.modal_kategori_barang.data("id")) === e.data.kategori_barang_id) {
+            let res = await fetch(`/api/bak_list?id=${e.data.kategori_barang_id}`, {
+                method: "GET",
+                headers: {
+                    token: localStorage.getItem("token")
+                }
+            });
+            global.element.barang_assigned_kategori.clear();
+            if (res.status === 200) {
+                const res_json = await res.json();
+                for (const data of res_json) {
+                    global.element.barang_assigned_kategori.row.add([
+                        data.nama_barang,
+                        format_thousand_separator.format(data.stok_barang),
+                        "Rp" + money_format_bigint(BigInt(data.harga_jual))
+                    ])
+                }
+            }
+            global.element.barang_assigned_kategori.draw();
+        }
+    }
+    else if (e.type === 3) {
         switch(e.code) {
             case "TAMBAH_KATEGORI": {
                 const data = await fetch_kategori_id(e.data.id);

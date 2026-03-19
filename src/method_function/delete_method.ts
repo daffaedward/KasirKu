@@ -23,6 +23,14 @@ export async function delete_method(req: Request, url: URL) {
 
             if (!id || isNaN(id)) return new Response("Bad Request", {status: 400});
 
+            stmt = db.prepare("SELECT kategori_barang_id FROM barang WHERE id = ?");
+            const res = stmt.get(id) as {kategori_barang_id: number};
+            stmt.finalize();
+
+            if (!res) return new Response("Not Found", {
+                status: 404
+            });
+
             try {
                 db.run("DELETE FROM barang WHERE id = ?", [id]);
             } catch(e) {
@@ -34,7 +42,8 @@ export async function delete_method(req: Request, url: URL) {
                 type: 2,
                 code: "DELETE_BARANG",
                 data: {
-                    id
+                    id,
+                    kategori_barang_id: res.kategori_barang_id
                 }
             }));
 
