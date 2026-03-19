@@ -45,6 +45,7 @@ global.element = {
                 width: "150px"
             },
         ],
+        responsive: true,
         autoWidth: false
     }),
     date: new Date()

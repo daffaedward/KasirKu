@@ -39,9 +39,10 @@ global.element = {
         columnDefs: [
             {
                 targets: 0,
-                width: "300px"
+                width: "30%"
             }
         ],
+        responsive: true,
         autoWidth: false
     }),
     kasir_table: $("#kasir_table").DataTable({
@@ -63,9 +64,10 @@ global.element = {
         columnDefs: [
             {
                 targets: 0,
-                width: "400px"
+                width: "40%"
             }
         ],
+        responsive: true,
         autoWidth: false
     }),
 }

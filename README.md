@@ -38,6 +38,8 @@
   Perubahan data dapat langsung tersinkron secara realtime tanpa reload halaman.
 - **Single Page Application (SPA)**  
   Navigasi halaman cepat tanpa reload penuh.
+- **Responsive UI**
+  Antarmuka berbasis AdminLTE yang nyaman digunakan di berbagai ukuran layar.
 - **Dark Mode**  
   Mendukung tampilan terang dan gelap.
 - **Session Authentication**  

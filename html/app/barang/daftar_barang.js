@@ -44,6 +44,7 @@ global.element = {
                 width: "300px"
             }
         ],
+        responsive: true,
         autoWidth: false
     })
 };

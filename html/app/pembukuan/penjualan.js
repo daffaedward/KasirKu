@@ -20,10 +20,11 @@ global.element = {
         columnDefs: [
             {
                 targets: 0,
-                width: "50px"
+                width: "5%"
             },
         ],
         autoWidth: false,
+        responsive: true,
         order: [[1, 'asc']]
     }),
     date: new Date()

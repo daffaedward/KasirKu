@@ -28,6 +28,7 @@ global.element = {
                 width: "300px"
             }
         ],
+        responsive: true,
         autoWidth: false
     }),
     barang_total_terjual_table: $("#barang_total_terjual_table").DataTable({
@@ -44,9 +45,10 @@ global.element = {
         columnDefs: [
             {
                 targets: 0,
-                width: "700px"
+                width: "50%"
             }
         ],
+        responsive: true,
         autoWidth: false
     }),
 

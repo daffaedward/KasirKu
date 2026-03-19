@@ -17,9 +17,10 @@ global.element = {
         columnDefs: [
             {
                 targets: 0,
-                width: "900px"
+                width: "50%"
             }
         ],
+        responsive: true,
         autoWidth: false
     }),
     barang_assigned_kategori: $("#barang_assigned_kategori").DataTable({
