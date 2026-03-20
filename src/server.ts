@@ -29,10 +29,10 @@ function stop_server() {
 }
 
 export function main() {
-    console.log("[LOG] HTTPS Server running in port 443");
+    console.log(`[LOG] HTTPS Server running in port ${global.config.listen_port}`);
 
     bun_serve = Bun.serve({
-        port: 443,
+        port: global.config.listen_port,
         tls: {
             key: Bun.file("cert/key.pem"),
             cert: Bun.file("cert/cert.pem")
@@ -72,7 +72,7 @@ export function main() {
             const url = new URL(req.url);
 
             url.protocol = "https:";
-            url.port = "443";
+            url.port = String(global.config.listen_port);
 
             return Response.redirect(url.toString(), 302);
         }

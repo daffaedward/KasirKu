@@ -4,6 +4,11 @@ import { global } from "./src/global";
 import { get_password_hash_only } from "./src/utils/utils";
 import { Database } from "bun:sqlite";
 import { mkdirSync } from "node:fs";
+import { readdir, stat } from "node:fs/promises";
+import { minify as minifyHTML } from "html-minifier-terser"
+import { minify as minifyJS } from "terser"
+import CleanCSS from "clean-css"
+import { brotliCompressSync } from "node:zlib";
 
 let default_svg_profile_img = `<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
@@ -17,20 +22,70 @@ let default_svg_profile_img = `<?xml version="1.0" encoding="utf-8"?>
 	z"/>
 </svg>` // https://upload.wikimedia.org/wikipedia/commons/4/4b/User-Pict-Profil.svg
 
+async function scan_html_file(dir: string) {
+    const entries = await readdir(dir, { withFileTypes: true })
+
+    for (const entry of entries) {
+        const full_path = dir + "/" + entry.name
+        if (entry.isDirectory()) {
+            await scan_html_file(full_path);
+            continue;
+        }
+
+        const stat_file = await stat(full_path);
+        let need_compile = false;
+
+        const build_path = full_path.replace("html/", "html_build/");
+
+        try {
+            const stat_build = await stat(build_path)
+            if (stat_file.mtime > stat_build.mtime) need_compile = true
+        } catch {need_compile = true}
+
+        if (need_compile) {
+            console.log("[BUILD] Building " + full_path);
+
+            let res: string | ArrayBuffer = "";
+            if (full_path.endsWith(".html")) {
+                let res_html = await minifyHTML(await Bun.file(full_path).text(), {
+                    collapseWhitespace: true,
+                    removeComments: true,
+                    removeOptionalTags: true,
+                    collapseBooleanAttributes: true,
+                    minifyCSS: true,
+                    minifyJS: true
+                });
+                res = res_html;
+            }
+            else if (full_path.endsWith(".js") && !full_path.endsWith(".min.js")) {
+                let res_js = await minifyJS(await Bun.file(full_path).text());
+                res = <string>res_js.code;
+            }
+            else if (full_path.endsWith(".css") && !full_path.endsWith(".min.css")) {
+                let res_css = new CleanCSS().minify(await Bun.file(full_path).text());
+                res = res_css.styles;
+            }
+            else res = await Bun.file(full_path).arrayBuffer();
+
+            await Bun.write(build_path, brotliCompressSync(res));
+        }
+    }
+}
+
 async function prepare() {
     console.log("[LOG] Preparing Server...");
 
     // Preapre Profile Image Folder
-    if (!(await Bun.file("html/profile_img/default.svg").exists())) {
+    if (!(await Bun.file("profile_img/default.svg").exists())) {
         console.log("[LOG] default.svg for default profile not found! Creating...");
         
         try {
-            mkdirSync("./html/profile_img");
+            mkdirSync("./profile_img");
         } catch (e) {
             console.log("[WARNING]:", e)
         }
 
-        await Bun.write("html/profile_img/default.svg", default_svg_profile_img);
+        await Bun.write("profile_img/default.svg", default_svg_profile_img);
         console.log("[LOG] default.svg has been created!");
     }
 
@@ -235,6 +290,21 @@ async function prepare() {
     global.database.run("PRAGMA synchronous = NORMAL;");
     global.database.run("PRAGMA foreign_keys = ON;");
     
+    if (!(await Bun.file("config.json").exists())) {
+        console.log("[LOG] Config file not found! Creating...");
+
+        await Bun.file("config.json").write(JSON.stringify(global.config, null, 4));
+        console.log("[LOG] Config file has been created");
+    } else global.config = await Bun.file("config.json").json();
+
+    if (global.config.compile_html) {
+       try {
+            mkdirSync("html_build");
+        } catch(e) {}
+
+        await scan_html_file("html");
+    }
+
     console.log("[LOG] All ready!");
 }
 

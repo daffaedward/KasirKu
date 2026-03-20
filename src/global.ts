@@ -28,7 +28,14 @@ export const global = {
     // Database (SQLite)
     database: null as unknown as Database,
 
+    // static cache for file
     static_cache: new Map() as Map<string, {buffer: Uint8Array, last_modified: number}>,
+
+    // config file
+    config: {
+        "listen_port": 443,
+        "compile_html": false
+    },
 
     // Permissions
     permissions: {

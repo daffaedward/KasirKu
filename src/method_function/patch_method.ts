@@ -184,7 +184,7 @@ export async function patch_method(req: Request, url: URL) {
                         user_info.user_id
                     ]);
 
-                    Bun.file(`html/profile_img/${user_info.user_id}.${get_type}`).write(new_profile_img);
+                    Bun.file(`profile_img/${user_info.user_id}.${get_type}`).write(new_profile_img);
                 } else {
                     db.run("UPDATE users SET username = ?, full_name = ?, modified_ms = ? WHERE id = ?", [
                         new_username,

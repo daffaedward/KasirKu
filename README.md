@@ -44,8 +44,10 @@
   Mendukung tampilan terang dan gelap.
 - **Session Authentication**  
   Sistem login dengan session untuk keamanan akses.
+- **Assets Optimization & Compression**  
+  File HTML dan JavaScript di-*minify* serta dikompresi menggunakan Brotli untuk mengurangi ukuran file, menghemat bandwidth, dan meningkatkan kecepatan loading halaman.
 - **Minimal Dependency**  
-  Backend ringan menggunakan Bun dan TypeScript.
+  Backend ringan menggunakan Bun dan TypeScript dengan dependensi minimal.
 - **Docker Support**  
   Dapat dijalankan dengan mudah menggunakan container Docker.
 
@@ -82,7 +84,7 @@ Jika mau pakai volume:
 docker run -d -p 80:80 -p 443:443 \
   -v kasirku-db:/app/database \
   -v kasirku-cert:/app/cert \
-  -v kasirku-profile:/app/html/profile_img \
+  -v kasirku-profile:/app/profile_img \
   kasirku
 ```
 

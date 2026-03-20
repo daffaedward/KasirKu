@@ -1,5 +1,7 @@
 import { Database } from "bun:sqlite";
 
+const text_decoder = new TextDecoder();
+
 // mime types
 export const mime_types: Record<string, string> = {
     html: "text/html",

@@ -472,6 +472,14 @@ export async function get_method(req: Request, url: URL, remote_ip: string) {
     const cookies = parse_cookie(req.headers.get("cookie") as string);
     const user_info = global.user_sessions.get(cookies.get("token") as string) as user_session_interface;
 
+    if (pathname.startsWith("/profile_img/")) {
+        const file = Bun.file(pathname.slice(1));
+        if (!(await file.exists())) return new Response("Not Found", {status: 404});
+        return new Response(file.stream(), {status: 200, headers: {
+            "Content-Type": mime_types[pathname.split(".").pop() || ""] || "application/octet-stream",
+        }});
+    }
+
     if (pathname.endsWith(".html")) {
         if (!user_info) {
             if (pathname !== "/login.html") return new Response("", {
@@ -506,17 +514,15 @@ export async function get_method(req: Request, url: URL, remote_ip: string) {
         }
     }
 
-    const should_cache = !pathname.endsWith(".html") && !pathname.startsWith("/profile_img/");
-    const cache_key = pathname;
-
-    let cached = should_cache ? global.static_cache.get(cache_key) : null;
+    let cached = global.static_cache.get(pathname);
 
     if (!cached) {
-        let file = Bun.file(`html${pathname}`);
+        const path = global.config.compile_html ? `html_build${pathname}` : `html${pathname}`
+        let file = Bun.file(path);
 
         if (!(await file.exists())) {
             pathname = "/404/index.html";
-            file = Bun.file(`html${pathname}`);
+            file = Bun.file(path);
         }
 
         if (!(await file.exists())) {
@@ -537,7 +543,7 @@ export async function get_method(req: Request, url: URL, remote_ip: string) {
 
         cached = { buffer, last_modified };
 
-        if (should_cache) global.static_cache.set(cache_key, cached);
+        global.static_cache.set(pathname, cached);
     }
 
     const { buffer, last_modified } = cached;
@@ -545,7 +551,7 @@ export async function get_method(req: Request, url: URL, remote_ip: string) {
 
     if (req.headers.get("if-none-match") === etag) return new Response(null, { status: 304 });
     const is_asset = pathname.startsWith("/plugins/") || pathname.startsWith("/dist/") || pathname === "/favicon.ico";
-    
+
     return new Response(<BodyInit>buffer, {
         status: 200,
         headers: {
@@ -556,7 +562,8 @@ export async function get_method(req: Request, url: URL, remote_ip: string) {
             ETag: etag,
             "Cache-Control": is_asset
             ? "public, max-age=31536000"
-            : "no-cache"
+            : "no-cache",
+            "Content-Encoding": global.config.compile_html ? "br" : "none"
         },
     });
 }
